@@ -1,0 +1,30 @@
+[package]
+name = "ivm"
+version = "0.1.0"
+edition = "2024"
+description = "Small Istio version and profile manager"
+license = "MIT"
+repository = "https://github.com/adrianmross/ivm"
+
+[dependencies]
+anyhow = "1.0"
+clap = { version = "4.5", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.8"
+
+[profile.dist]
+inherits = "release"
+lto = "thin"
+
+[workspace.metadata.dist]
+dist-version = "0.31.0"
+cargo-dist-version = "0.31.0"
+ci = "github"
+installers = ["shell", "homebrew"]
+targets = ["aarch64-apple-darwin", "x86_64-apple-darwin", "x86_64-unknown-linux-gnu"]
+install-path = "CARGO_HOME"
+install-updater = false
+formula = "ivm"
+pr-run-mode = "plan"
+dispatch-releases = true
+hosting = "github"
