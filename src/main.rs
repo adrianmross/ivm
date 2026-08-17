@@ -88,9 +88,11 @@ fn profile_command(command: ProfileCommand) -> Result<()> {
     match command {
         ProfileCommand::List => {
             for (name, profile) in &config.profiles {
-                let marker = (config.active_profile.as_deref() == Some(name))
-                    .then_some("*")
-                    .unwrap_or(" ");
+                let marker = if config.active_profile.as_deref() == Some(name) {
+                    "*"
+                } else {
+                    " "
+                };
                 println!(
                     "{marker} {name}: {} ({})",
                     profile.istio_version, profile.context

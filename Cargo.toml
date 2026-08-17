@@ -5,6 +5,7 @@ edition = "2024"
 description = "Small Istio version and profile manager"
 license = "MIT"
 repository = "https://github.com/adrianmross/ivm"
+homepage = "https://github.com/adrianmross/ivm"
 
 [dependencies]
 anyhow = "1.0"
@@ -16,15 +17,26 @@ toml = "0.8"
 inherits = "release"
 lto = "thin"
 
+# Config for 'dist'
 [workspace.metadata.dist]
 dist-version = "0.31.0"
+# The preferred dist version to use in CI (Cargo.toml SemVer syntax)
 cargo-dist-version = "0.31.0"
+# CI backends to support
 ci = "github"
+# The installers to generate for each app
 installers = ["shell", "homebrew"]
+# Target platforms to build apps for (Rust target-triple syntax)
 targets = ["aarch64-apple-darwin", "x86_64-apple-darwin", "x86_64-unknown-linux-gnu"]
+# Path that installers should place binaries in
 install-path = "CARGO_HOME"
+# Whether to install an updater program
 install-updater = false
+# Customize the Homebrew formula name
 formula = "ivm"
+# Which actions to run on pull requests
 pr-run-mode = "plan"
+# Whether CI should trigger releases with dispatches instead of tag pushes
 dispatch-releases = true
+# Where to host releases
 hosting = "github"
