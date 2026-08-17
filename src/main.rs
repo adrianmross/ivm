@@ -28,8 +28,15 @@ enum CommandKind {
     },
     Status,
     Install,
-    Apply,
+    Apply(ApplyArgs),
+    Unapply,
     Uninstall,
+}
+
+#[derive(Args)]
+struct ApplyArgs {
+    #[arg(short = 'd', long = "delete")]
+    delete: bool,
 }
 
 #[derive(Subcommand)]
@@ -70,8 +77,9 @@ fn main() -> Result<()> {
         CommandKind::Profile { command } => profile_command(command),
         CommandKind::Status => status(),
         CommandKind::Install => install(),
-        CommandKind::Apply => apply("install"),
-        CommandKind::Uninstall => apply("uninstall"),
+        CommandKind::Apply(args) => apply(if args.delete { "uninstall" } else { "install" }),
+        CommandKind::Unapply => apply("uninstall"),
+        CommandKind::Uninstall => uninstall(),
     }
 }
 
@@ -143,6 +151,20 @@ fn install() -> Result<()> {
         return Ok(());
     }
     download_istioctl(&profile.istio_version, &binary)
+}
+
+fn uninstall() -> Result<()> {
+    let config = load_config()?;
+    let (_, profile) = active_profile(&config)?;
+    let binary = istioctl_path(&profile.istio_version)?;
+    let version_dir = binary.parent().context("invalid istioctl cache path")?;
+    if version_dir.is_dir() {
+        fs::remove_dir_all(version_dir).context("removing cached istioctl")?;
+        println!("removed cached Istio {}", profile.istio_version);
+    } else {
+        println!("Istio {} is not cached", profile.istio_version);
+    }
+    Ok(())
 }
 
 fn apply(action: &str) -> Result<()> {

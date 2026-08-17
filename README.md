@@ -25,13 +25,22 @@ ivm profile set besu \
 ivm profile use fabric
 ivm install # download/cache the pinned istioctl
 ivm apply   # run istioctl install against the pinned context
+ivm unapply # run istioctl uninstall --purge -y
+ivm apply -d # same as unapply
 ivm status
 ```
 
 Switching profiles does not modify `PATH` or a Kubernetes cluster. `ivm apply`
 uses the selected profile's exact `istioctl` binary and context.
 
-To remove the selected mesh:
+To remove the selected mesh from Kubernetes:
+
+```sh
+ivm unapply
+# or: ivm apply -d
+```
+
+To remove only the locally cached client:
 
 ```sh
 ivm uninstall
